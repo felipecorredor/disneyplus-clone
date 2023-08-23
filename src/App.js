@@ -1,25 +1,54 @@
-import logo from './logo.svg';
-import './App.css';
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import "./App.css";
+import Login from "./components/Login";
+import Header from "./components/Header";
+import Home from "./components/Home";
+import useSetUser from "./hooks/useSetUser";
+import { useEffect, useState } from "react";
+import { auth } from "./firebase";
+import ProtectedRoute from "./utils/protectedRoute";
+import { useSelector } from "react-redux";
+import Detail from "./components/Detail";
 
-function App() {
+const App = () => {
+  const [setUser] = useSetUser();
+
+  useEffect(() => {
+    auth.onAuthStateChanged((user) => {
+      if (user) {
+        setUser(user);
+      }
+    });
+  }, [setUser]);
+
+  const user = useSelector((state) => state.user.name);
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Router>
+        <Header />
+        <Routes>
+          <Route path="/" element={<Login />} />
+          <Route
+            path="/home"
+            element={
+              <ProtectedRoute user={user}>
+                <Home />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/detail/:movieId"
+            element={
+              <ProtectedRoute user={true}>
+                <Detail />
+              </ProtectedRoute>
+            }
+          />
+        </Routes>
+      </Router>
     </div>
   );
-}
+};
 
 export default App;
