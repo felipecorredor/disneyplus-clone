@@ -4,11 +4,12 @@ import Login from "./components/Login";
 import Header from "./components/Header";
 import Home from "./components/Home";
 import useSetUser from "./hooks/useSetUser";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { auth } from "./firebase";
 import ProtectedRoute from "./utils/protectedRoute";
 import { useSelector } from "react-redux";
 import Detail from "./components/Detail";
+import "react-toastify/dist/ReactToastify.css";
 
 const App = () => {
   const [setUser] = useSetUser();
